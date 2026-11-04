@@ -39,42 +39,48 @@ scoring:
     - name: Suicide prevention
       weight: 30
       keywords: ["suicid*", "lethal means", "firearm*"]
-    - name: Toxic exposures / PACT Act
+    - name: Toxic and military exposures / PACT Act
       weight: 30
-      keywords: ["burn pit*", "airborne hazard*", "Agent Orange", "PACT Act", "Gulf War illness", "Camp Lejeune", "toxic exposure*", "open burn*", "herbicide*"]
+      keywords: ["burn pit*", "airborne hazard*", "Agent Orange", "PACT Act", "Gulf War", "Camp Lejeune", "toxic exposure*", "open burn*", "herbicide*", "military exposure*", "occupational exposure*", "environmental exposure*", "chemical exposure*", "toxicant*", "PFAS", "depleted uranium", "ionizing radiation", "radiation exposure", "asbestos", "solvent exposure*"]
     - name: Million Veteran Program
       weight: 25
       keywords: ["Million Veteran Program"]
     - name: Psychedelic therapies
-      weight: 20
-      keywords: ["psilocybin", "MDMA", "psychedelic*", "esketamine", "ketamine"]
+      weight: 30
+      keywords: ["psilocybin", "psilocin", "MDMA", "ibogaine", "LSD", "ayahuasca", "mescaline", "psychedelic*", "esketamine", "ketamine"]
+    - name: LGBTQ+ health
+      weight: 30
+      keywords: ["LGBT*", "lesbian", "gay", "bisexual", "transgender", "nonbinary", "queer", "sexual minorit*", "gender minorit*", "sexual and gender minorit*", "gender diverse", "gender identity", "sexual orientation", "gender-affirming", "gender dysphoria"]
+    - name: Precision medicine
+      weight: 30
+      keywords: ["precision medicine", "precision oncology", "precision health", "personalized medicine", "pharmacogenom*", "pharmacogenetic*", "genomic medicine", "polygenic*", "genome-wide", "whole genome sequencing", "whole-genome sequencing"]
     - name: PTSD and trauma
       weight: 15
       keywords: ["PTSD", "posttraumatic stress", "post-traumatic stress", "moral injury", "military sexual trauma"]
     - name: Traumatic brain injury
-      weight: 15
-      keywords: ["traumatic brain injur*", "TBI", "blast exposure", "concussion*"]
+      weight: 30
+      keywords: ["traumatic brain injur*", "TBI", "brain injur*", "head injur*", "blast exposure", "concussion*"]
     - name: Homelessness
-      weight: 15
-      keywords: ["homeless*", "housing instability"]
+      weight: 30
+      keywords: ["homeless*", "housing instability", "housing insecurity", "unhoused", "housing first", "HUD-VASH"]
     - name: Prosthetics, amputation and spinal cord injury
       weight: 15
       keywords: ["prosthe*", "amputat*", "spinal cord injur*", "exoskeleton*"]
     - name: Opioids and substance use
-      weight: 12
-      keywords: ["opioid*", "buprenorphine", "naloxone", "fentanyl", "alcohol use disorder", "substance use disorder*"]
+      weight: 20
+      keywords: ["opioid*", "buprenorphine", "naloxone", "naltrexone", "fentanyl", "overdose*", "methamphetamine", "addiction", "alcohol use disorder", "substance use disorder*", "cannabis use disorder", "stimulant use", "re:\\bSUD\\b", "re:\\bOUD\\b"]
     - name: Women veterans
-      weight: 12
-      keywords: ["women veterans", "female veterans"]
+      weight: 20
+      keywords: ["women veteran*", "female veteran*", "servicewomen", "women service member*", "female service member*", "women in the military", "women's health"]
     - name: GLP-1, diabetes and heart failure
-      weight: 12
-      keywords: ["GLP-1*", "semaglutide", "tirzepatide", "heart failure"]
+      weight: 20
+      keywords: ["GLP-1*", "semaglutide", "tirzepatide", "liraglutide", "dulaglutide", "exenatide", "heart failure"]
     - name: AI and digital health
-      weight: 12
-      keywords: ["artificial intelligence", "machine learning", "deep learning", "large language model*", "ChatGPT", "telehealth", "telemedicine", "telemental health"]
+      weight: 20
+      keywords: ["AI", "synthetic intelligence", "artificial intelligence", "machine learning", "deep learning", "large language model*", "ChatGPT", "telehealth", "telemedicine", "telemental health"]
     - name: Cancer
-      weight: 10
-      keywords: ["cancer*", "oncolog*", "carcinoma*", "lymphoma", "leukemia", "melanoma"]
+      weight: 20
+      keywords: ["cancer*", "oncolog*", "carcinoma*", "lymphoma", "leukemia", "melanoma", "sarcoma", "myeloma", "tumor*", "neoplasm*", "chemotherapy", "immunotherapy", "radiotherapy"]
     - name: Dementia and brain health
       weight: 10
       keywords: ["dementia", "Alzheimer*", "Parkinson*", "cognitive decline"]
@@ -84,9 +90,12 @@ scoring:
     - name: Caregivers and families
       weight: 8
       keywords: ["caregiver*"]
-    - name: Rural care and access
-      weight: 8
-      keywords: ["rural", "community care", "MISSION Act", "wait time*"]
+    - name: Rural health
+      weight: 20
+      keywords: ["rural", "rurality", "urban-rural", "Appalachia", "drive time", "travel distance", "distance to care"]
+    - name: Community care and access
+      weight: 20
+      keywords: ["community care", "Community Care Network", "MISSION Act", "Choice Act", "non-VA care", "purchased care", "wait time*"]
 
   # Prefix a keyword with "re:" to use a raw regular expression.
   study_designs:

@@ -1,5 +1,5 @@
 {
-  "started": "2026-11-04T15:47:05",
+  "started": "2026-11-04T10:54:40",
   "start_date": "2026-10-01",
   "sources": {
     "pubmed": {
@@ -19,9 +19,9 @@
   "total": 1353,
   "new": 0,
   "tiers": {
-    "High": 88,
-    "Medium": 276,
-    "Low": 989
+    "High": 183,
+    "Medium": 306,
+    "Low": 864
   },
   "journal_tiers": {
     "Top": 105,
@@ -30,7 +30,7 @@
     "Preprint": 135,
     "Not rated": 34
   },
-  "finished": "2026-11-04T15:47:32",
+  "finished": "2026-11-04T10:55:07",
   "scoring": {
     "tiers": {
       "high": 45,
@@ -56,18 +56,29 @@
         ]
       },
       {
-        "name": "Toxic exposures / PACT Act",
+        "name": "Toxic and military exposures / PACT Act",
         "weight": 30,
         "keywords": [
           "burn pit*",
           "airborne hazard*",
           "Agent Orange",
           "PACT Act",
-          "Gulf War illness",
+          "Gulf War",
           "Camp Lejeune",
           "toxic exposure*",
           "open burn*",
-          "herbicide*"
+          "herbicide*",
+          "military exposure*",
+          "occupational exposure*",
+          "environmental exposure*",
+          "chemical exposure*",
+          "toxicant*",
+          "PFAS",
+          "depleted uranium",
+          "ionizing radiation",
+          "radiation exposure",
+          "asbestos",
+          "solvent exposure*"
         ]
       },
       {
@@ -79,13 +90,56 @@
       },
       {
         "name": "Psychedelic therapies",
-        "weight": 20,
+        "weight": 30,
         "keywords": [
           "psilocybin",
+          "psilocin",
           "MDMA",
+          "ibogaine",
+          "LSD",
+          "ayahuasca",
+          "mescaline",
           "psychedelic*",
           "esketamine",
           "ketamine"
+        ]
+      },
+      {
+        "name": "LGBTQ+ health",
+        "weight": 30,
+        "keywords": [
+          "LGBT*",
+          "lesbian",
+          "gay",
+          "bisexual",
+          "transgender",
+          "nonbinary",
+          "queer",
+          "sexual minorit*",
+          "gender minorit*",
+          "sexual and gender minorit*",
+          "gender diverse",
+          "gender identity",
+          "sexual orientation",
+          "gender-affirming",
+          "gender dysphoria"
+        ]
+      },
+      {
+        "name": "Precision medicine",
+        "weight": 30,
+        "keywords": [
+          "precision medicine",
+          "precision oncology",
+          "precision health",
+          "personalized medicine",
+          "pharmacogenom*",
+          "pharmacogenetic*",
+          "genomic medicine",
+          "polygenic*",
+          "genome-wide",
+          "whole genome sequencing",
+          "whole-genome sequencing"
         ]
       },
       {
@@ -101,20 +155,26 @@
       },
       {
         "name": "Traumatic brain injury",
-        "weight": 15,
+        "weight": 30,
         "keywords": [
           "traumatic brain injur*",
           "TBI",
+          "brain injur*",
+          "head injur*",
           "blast exposure",
           "concussion*"
         ]
       },
       {
         "name": "Homelessness",
-        "weight": 15,
+        "weight": 30,
         "keywords": [
           "homeless*",
-          "housing instability"
+          "housing instability",
+          "housing insecurity",
+          "unhoused",
+          "housing first",
+          "HUD-VASH"
         ]
       },
       {
@@ -129,38 +189,56 @@
       },
       {
         "name": "Opioids and substance use",
-        "weight": 12,
+        "weight": 20,
         "keywords": [
           "opioid*",
           "buprenorphine",
           "naloxone",
+          "naltrexone",
           "fentanyl",
+          "overdose*",
+          "methamphetamine",
+          "addiction",
           "alcohol use disorder",
-          "substance use disorder*"
+          "substance use disorder*",
+          "cannabis use disorder",
+          "stimulant use",
+          "re:\\bSUD\\b",
+          "re:\\bOUD\\b"
         ]
       },
       {
         "name": "Women veterans",
-        "weight": 12,
+        "weight": 20,
         "keywords": [
-          "women veterans",
-          "female veterans"
+          "women veteran*",
+          "female veteran*",
+          "servicewomen",
+          "women service member*",
+          "female service member*",
+          "women in the military",
+          "women's health"
         ]
       },
       {
         "name": "GLP-1, diabetes and heart failure",
-        "weight": 12,
+        "weight": 20,
         "keywords": [
           "GLP-1*",
           "semaglutide",
           "tirzepatide",
+          "liraglutide",
+          "dulaglutide",
+          "exenatide",
           "heart failure"
         ]
       },
       {
         "name": "AI and digital health",
-        "weight": 12,
+        "weight": 20,
         "keywords": [
+          "AI",
+          "synthetic intelligence",
           "artificial intelligence",
           "machine learning",
           "deep learning",
@@ -173,14 +251,21 @@
       },
       {
         "name": "Cancer",
-        "weight": 10,
+        "weight": 20,
         "keywords": [
           "cancer*",
           "oncolog*",
           "carcinoma*",
           "lymphoma",
           "leukemia",
-          "melanoma"
+          "melanoma",
+          "sarcoma",
+          "myeloma",
+          "tumor*",
+          "neoplasm*",
+          "chemotherapy",
+          "immunotherapy",
+          "radiotherapy"
         ]
       },
       {
@@ -211,12 +296,28 @@
         ]
       },
       {
-        "name": "Rural care and access",
-        "weight": 8,
+        "name": "Rural health",
+        "weight": 20,
         "keywords": [
           "rural",
+          "rurality",
+          "urban-rural",
+          "Appalachia",
+          "drive time",
+          "travel distance",
+          "distance to care"
+        ]
+      },
+      {
+        "name": "Community care and access",
+        "weight": 20,
+        "keywords": [
           "community care",
+          "Community Care Network",
           "MISSION Act",
+          "Choice Act",
+          "non-VA care",
+          "purchased care",
           "wait time*"
         ]
       }

@@ -71,7 +71,8 @@ async function loadData() {
     state.byKey = new Map(pubs.map((r) => [r.key, r]));
     for (const r of pubs) {
       r.added = r.added || (r.first_seen || "").slice(0, 10);
-      r._search = [r.title, r.abstract, r.authors, r.journal, r.funder, r.funding_text, r.mesh_terms, r.doi, r.pmid]
+      r._search = [r.title, r.abstract, r.authors, r.journal, r.funder, r.funding_text, r.mesh_terms, r.doi, r.pmid,
+        ...(r.author_affiliations?.affiliations || [])]
         .filter(Boolean).join(" ").toLowerCase();
     }
     state.days = [...new Set(pubs.map((r) => r.added).filter(Boolean))].sort().reverse();
@@ -273,6 +274,7 @@ function cardHtml(r) {
       <div>
         <div class="card-title">${esc(r.title || "(untitled)")}</div>
         <div class="card-meta"><span class="jt ${jtClass(r.journal_tier)}">${esc(jtLabel(r.journal_tier))}</span> ${meta}</div>
+        ${r.first_va_author ? `<div class="card-affil" title="${esc(r.first_va_author.cleaned ? "First VA-affiliated author" : "First VA-affiliated author (affiliation shown as published)")}">First VA author: <strong>${esc(r.first_va_author.name)}</strong> · ${esc(r.first_va_author.facility)}</div>` : ""}
         <div class="card-tags">${tags.join("")}</div>
       </div>
       <div class="card-score"><div class="num">${r.score}</div><div class="lbl">${esc(r.tier)}</div></div>
@@ -308,6 +310,26 @@ function toggleFlag(key) {
 function link(label, url) {
   const u = safeUrl(url);
   return u ? `<li>${esc(label)}: <a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(u)}</a></li>` : "";
+}
+
+function authorsHtml(r, authorNames) {
+  const aa = r.author_affiliations;
+  const limit = 25;
+  if (!aa?.authors?.length) {
+    return `<h3>Authors</h3><p>${esc(authorNames.slice(0, limit).join("; "))}${authorNames.length > limit ? ` … (+${authorNames.length - limit} more)` : ""}</p>`;
+  }
+  const va = new Set(r.va_affil_idx || []);
+  const shown = aa.authors.slice(0, limit);
+  const used = [...new Set(shown.flatMap((a) => a.aff))].sort((a, b) => a - b);
+  const names = shown.map((a) => {
+    const marks = a.aff.map((i) => i + 1).join(",");
+    return `${esc(a.name)}${marks ? `<sup>${marks}</sup>` : ""}`;
+  }).join("; ");
+  const more = aa.authors.length > limit ? ` … (+${aa.authors.length - limit} more)` : "";
+  const items = used.map((i) => `<li value="${i + 1}">${va.has(i) ? `<strong>${esc(aa.affiliations[i])}</strong>` : esc(aa.affiliations[i])}</li>`).join("");
+  return `<h3>Authors</h3><p>${names}${more}</p>
+    <h3>Affiliations</h3><ol class="affils">${items}</ol>
+    <p class="muted">VA affiliations are in bold.</p>`;
 }
 
 function showDetail(r) {
@@ -346,8 +368,7 @@ function showDetail(r) {
     ${ev ? `<h3>Funding evidence</h3><ul>${ev}</ul>` : ""}
     <h3>Links</h3>
     <ul>${links || "<li>None</li>"}</ul>
-    <h3>Authors</h3>
-    <p>${esc(authors.slice(0, 25).join("; "))}${authors.length > 25 ? ` … (+${authors.length - 25} more)` : ""}</p>
+    ${authorsHtml(r, authors)}
     ${r.corresponding_authors ? `<p class="muted">Corresponding: ${esc(r.corresponding_authors)}</p>` : ""}
     ${r.abstract ? `<h3>Abstract</h3><p class="abstract">${esc(r.abstract)}</p>` : ""}
     ${r.funding_text ? `<h3>Funding statement</h3><p>${esc(r.funding_text)}</p>` : ""}
@@ -362,6 +383,7 @@ const CSV_COLUMNS = [
   ["Publication type", "pub_type"], ["Document type", "doc_type"],
   ["VA affiliated", "va_affiliated"], ["VA funded", "va_funded"], ["ORD funded", "ord_funded"],
   ["ORD services", "ord_services"], ["Score reasons", "score_reasons"], ["Authors", "authors"],
+  ["First VA author", "first_va_author_name"], ["First VA author facility", "first_va_author_facility"],
   ["DOI", "doi"], ["PMID", "pmid"], ["PMCID", "pmcid"], ["Open access URL", "oa_url"],
   ["Publisher link", "source_linkout"], ["Sources", "sources"],
 ];
@@ -375,11 +397,17 @@ function csvCell(v) {
   return `"${v.replace(/"/g, '""')}"`;
 }
 
+function csvField(r, f) {
+  if (f === "first_va_author_name") return r.first_va_author?.name;
+  if (f === "first_va_author_facility") return r.first_va_author?.facility;
+  return r[f];
+}
+
 function exportView() {
   const ordered = TIERS.flatMap((t) => state.view.filter((r) => r.tier === t));
   if (!ordered.length) return showStatus("Nothing to export with the current filters.", true);
   const lines = [CSV_COLUMNS.map(([h]) => csvCell(h)).join(",")];
-  for (const r of ordered) lines.push(CSV_COLUMNS.map(([, f]) => csvCell(r[f])).join(","));
+  for (const r of ordered) lines.push(CSV_COLUMNS.map(([, f]) => csvCell(csvField(r, f))).join(","));
   const blob = new Blob(["\ufeff" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);

@@ -44,6 +44,73 @@ ORD_GENERIC_RE = re.compile(
     r"|Research Career Scientist|\bSPiRE\b|Million Veteran Program|\bMVP\b", re.I)
 SENTENCE_SPLIT_RE = re.compile(r"(?<=[.;])\s+|\n+")
 
+VA_EXTRA_RE = re.compile(r"(?i)\bVeterans['\u2019]?\s+(?:Memorial\s+)?(?:Hospital|Medical)|\bVA\s+(?:Hospital|Clinic|Outpatient)")
+# A bare agency name with no place, e.g. "Department of Veterans Affairs Medical Center".
+GENERIC_FACILITY_RE = re.compile(
+    r"(?i)^(?:(?:the )?(?:U\.?S\.? )?Department of )?(?:Veterans Affairs|VA|Veterans Health Administration|Veterans Administration)"
+    r"(?: (?:Medical Cent(?:er|re)|Health ?care System|Health System))?$")
+PLACE_SKIP_RE = re.compile(r"(?i)^(?:[A-Z]{2}|USA|U\.S\.A\.?|United States(?: of America)?)$|\d")
+DEPARTMENT_WORD_RE = re.compile(
+    r"(?i)\b(?:service|department|division|center|institute|school|program|office|section|unit|university)\b")
+MAX_FACILITY_LEN = 100
+
+
+def is_va_affiliation(text):
+    return bool(VA_AFFIL_RE.search(text) or VA_EXTRA_RE.search(text))
+
+
+_NAME_WORD = r"[A-Z][\w.'\u2019-]*"
+# Facility phrases inside affiliations that have no comma separators.
+FACILITY_PHRASE_RES = [
+    re.compile(rf"(?:Department of )?Veterans Affairs(?: {_NAME_WORD}){{1,5}} Health ?[Cc]are System"),
+    re.compile(rf"\bVA(?: {_NAME_WORD}){{1,5}} Health ?[Cc]are System"),
+    re.compile(rf"(?:{_NAME_WORD} ){{1,4}}(?:VA|Veterans Affairs|Veterans) (?:Medical Cent(?:er|re)|Hospital)"),
+]
+
+
+def facility_name(affil):
+    """Return (facility, cleaned); cleaned is False when only the raw affiliation text could be used."""
+    text = " ".join(re.sub(r"\([^)]*\)", " ", affil).split())
+    parts = [p.strip(" .") for p in re.split(r"[;,]", text)]
+    parts = [p for p in parts if p]
+    for i, p in enumerate(parts):
+        if " and " in p:
+            tail = p.rsplit(" and ", 1)[1]
+            if is_va_affiliation(tail) and not GENERIC_FACILITY_RE.match(tail):
+                p = tail
+        if not is_va_affiliation(p) or len(p) > MAX_FACILITY_LEN:
+            continue
+        if not GENERIC_FACILITY_RE.match(p):
+            return p, True
+        nxt = parts[i + 1] if i + 1 < len(parts) else ""
+        if nxt and len(nxt) <= 40 and not PLACE_SKIP_RE.search(nxt) and not DEPARTMENT_WORD_RE.search(nxt):
+            return f"{p}, {nxt}", True
+    for rx in FACILITY_PHRASE_RES:
+        m = rx.search(text)
+        if m:
+            return m.group(0).strip(" ."), True
+    raw = " ".join(affil.split())
+    # Start the raw text at the first VA part so long multi-institution strings stay readable.
+    va_part = next((p for p in parts if is_va_affiliation(p)), None)
+    pos = raw.find(va_part[:30]) if va_part else -1
+    if pos > 0:
+        raw = raw[pos:]
+    return (raw if len(raw) <= 160 else raw[:159] + "\u2026"), False
+
+
+def first_va_author(record):
+    """Indexes of VA affiliations plus the first author with one, with a cleaned facility name."""
+    aa = record.get("author_affiliations") or {}
+    affils = aa.get("affiliations") or []
+    va_idx = [i for i, a in enumerate(affils) if is_va_affiliation(a)]
+    va_set = set(va_idx)
+    for au in aa.get("authors") or []:
+        hit = next((i for i in au["aff"] if i in va_set), None)
+        if hit is not None:
+            facility, cleaned = facility_name(affils[hit])
+            return va_idx, {"name": au["name"], "facility": facility, "cleaned": cleaned}
+    return va_idx, None
+
 
 def _snippet(text, limit=240):
     text = " ".join(text.split())
@@ -108,8 +175,11 @@ def classify(record):
         ord_services = [UNSPECIFIED]
 
     affil_text = " ".join(filter(None, [record.get("research_orgs"), record.get("affiliations")]))
+    va_idx, first_va = first_va_author(record)
     return {
         "va_affiliated": bool(VA_AFFIL_RE.search(affil_text)),
+        "va_affil_idx": va_idx,
+        "first_va_author": first_va,
         "va_funded": state["va"],
         "ord_funded": state["ord"],
         "ord_services": ord_services,

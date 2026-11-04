@@ -6,7 +6,7 @@ FIELDS = [
     "pmid", "pmcid", "doi", "openalex_id", "title", "abstract", "journal",
     "publisher", "pub_date", "pub_type", "doc_type", "authors", "corresponding_authors",
     "affiliations", "open_access", "oa_url", "times_cited", "rcr", "fcr", "retraction",
-    "source_linkout", "rcdc", "health_areas",
+    "source_linkout", "rcdc", "health_areas", "author_affiliations",
 ]
 UNION_FIELDS = ["funder", "grant_ids", "research_orgs", "mesh_terms", "fields_of_research", "issn"]
 TEXT_FIELDS = ["funding_text", "acknowledgements"]
@@ -16,6 +16,24 @@ def empty_record(source):
     rec = {f: None for f in FIELDS + UNION_FIELDS + TEXT_FIELDS}
     rec["sources"] = [source]
     return rec
+
+
+def build_author_affiliations(pairs):
+    """Turn [(author, [affiliation, ...])] into authors indexing one shared affiliation list."""
+    affils, index, authors = [], {}, []
+    for name, items in pairs:
+        ids = []
+        for a in items:
+            a = " ".join((a or "").split())
+            if not a:
+                continue
+            if a not in index:
+                index[a] = len(affils)
+                affils.append(a)
+            if index[a] not in ids:
+                ids.append(index[a])
+        authors.append({"name": name, "aff": ids})
+    return {"authors": authors, "affiliations": affils} if affils else None
 
 
 def _priority(rec):

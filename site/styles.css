@@ -37,6 +37,10 @@ button.link { border: 0; background: none; color: var(--blue); padding: 4px 0; t
 .topbar .tagline { font-size: 14px; color: #dce4ef; margin-top: 2px; }
 .topbar p { margin: 4px 0 0; color: #c9d3df; font-size: 13px; }
 .topbar .toplink { color: #fff; }
+.card-affil { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.card-affil strong { color: var(--text); font-weight: 600; }
+.affils { padding-left: 22px; font-size: 13px; margin: 4px 0; }
+.affils li { margin-bottom: 3px; }
 .actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .actions .label { color: #c9d3df; font-size: 13px; }
 .divider { width: 1px; height: 24px; background: #3d5a80; margin: 0 8px; }

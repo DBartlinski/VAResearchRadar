@@ -3,7 +3,7 @@ import time
 
 import requests
 
-from ..records import empty_record
+from ..records import build_author_affiliations, empty_record
 from ..utils import normalize_doi, normalize_pmid
 from .http import make_session
 
@@ -60,17 +60,21 @@ def parse_work(w):
     rec["open_access"] = oa.get("oa_status")
     rec["times_cited"] = w.get("cited_by_count")
 
-    authors, affils, orgs = [], [], []
+    authors, affils, orgs, pairs = [], [], [], []
     for a in w.get("authorships") or []:
         name = (a.get("author") or {}).get("display_name")
         if name:
             authors.append(name)
-        affils.extend(x for x in a.get("raw_affiliation_strings") or [] if x not in affils)
-        orgs.extend(i["display_name"] for i in a.get("institutions") or []
-                    if i.get("display_name") and i["display_name"] not in orgs)
+        raw = a.get("raw_affiliation_strings") or []
+        affils.extend(x for x in raw if x not in affils)
+        inst_names = [i["display_name"] for i in a.get("institutions") or [] if i.get("display_name")]
+        orgs.extend(n for n in inst_names if n not in orgs)
+        if name:
+            pairs.append((name, raw or inst_names))
     rec["authors"] = "; ".join(authors) or None
     rec["affiliations"] = "; ".join(affils) or None
     rec["research_orgs"] = "; ".join(orgs) or None
+    rec["author_affiliations"] = build_author_affiliations(pairs)
 
     funders, awards = [], []
     for key in ("grants", "awards"):

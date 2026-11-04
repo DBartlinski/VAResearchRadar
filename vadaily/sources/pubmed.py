@@ -3,7 +3,7 @@ import re
 import time
 import xml.etree.ElementTree as ET
 
-from ..records import empty_record
+from ..records import build_author_affiliations, empty_record
 from ..utils import best_date, normalize_doi
 from .http import make_session
 
@@ -57,18 +57,24 @@ def parse_article(art):
     rec["pub_date"] = best_date(_date(article.find("ArticleDate")),
                                 _date(article.find("Journal/JournalIssue/PubDate")))
 
-    authors, affils = [], []
+    authors, affils, pairs = [], [], []
     for au in article.findall("AuthorList/Author"):
         name = au.findtext("CollectiveName") or ", ".join(
             filter(None, [au.findtext("LastName"), au.findtext("ForeName") or au.findtext("Initials")]))
         if name:
             authors.append(name)
+        own = []
         for af in au.findall("AffiliationInfo/Affiliation"):
             t = _text(af)
+            if t:
+                own.append(t)
             if t and t not in affils:
                 affils.append(t)
+        if name:
+            pairs.append((name, own))
     rec["authors"] = "; ".join(authors) or None
     rec["affiliations"] = "; ".join(affils) or None
+    rec["author_affiliations"] = build_author_affiliations(pairs)
 
     rec["mesh_terms"] = "; ".join(_text(d) for d in cit.findall("MeshHeadingList/MeshHeading/DescriptorName")) or None
 

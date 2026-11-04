@@ -1,0 +1,138 @@
+# Publications dated before this are ignored.
+start_date: 2026-10-01
+
+# PubMed/OpenAlex are re-queried this many days back each run (never earlier than start_date).
+lookback_days: 45
+
+# NCBI and OpenAlex ask for a contact email on API requests.
+contact_email: ""
+
+paths:
+  database: data/vadaily.db
+  site: site
+
+pubmed:
+  enabled: true
+  # Optional NCBI_API_KEY environment variable raises the rate limit.
+  query: >-
+    ("Veterans Affairs"[ad] OR "Veterans Health Administration"[ad] OR "Veterans Administration"[ad]
+    OR "VA Medical Center"[ad] OR "VA Healthcare"[ad] OR "VA Health Care"[ad] OR "VAMC"[ad]
+    OR "VAHCS"[ad] OR "Department of Veterans"[ad]
+    OR "BLRD VA"[gr] OR "CSRD VA"[gr] OR "HSRD VA"[gr] OR "RRD VA"[gr] OR "CSP VA"[gr])
+
+openalex:
+  enabled: true
+  # Leave empty to auto-resolve "Department of Veterans Affairs".
+  institution_ids: [I1322918889]  # United States Department of Veterans Affairs (includes child institutions)
+  funder_ids: [F4320306127]       # U.S. Department of Veterans Affairs
+
+scoring:
+  tiers:
+    high: 45
+    medium: 25
+
+  veteran_in_title:
+    weight: 10
+    keywords: ["veteran*", "military", "service member*", "servicemember*"]
+
+  topics:
+    - name: Suicide prevention
+      weight: 30
+      keywords: ["suicid*", "lethal means", "firearm*"]
+    - name: Toxic exposures / PACT Act
+      weight: 30
+      keywords: ["burn pit*", "airborne hazard*", "Agent Orange", "PACT Act", "Gulf War illness", "Camp Lejeune", "toxic exposure*", "open burn*", "herbicide*"]
+    - name: Million Veteran Program
+      weight: 25
+      keywords: ["Million Veteran Program"]
+    - name: Psychedelic therapies
+      weight: 20
+      keywords: ["psilocybin", "MDMA", "psychedelic*", "esketamine", "ketamine"]
+    - name: PTSD and trauma
+      weight: 15
+      keywords: ["PTSD", "posttraumatic stress", "post-traumatic stress", "moral injury", "military sexual trauma"]
+    - name: Traumatic brain injury
+      weight: 15
+      keywords: ["traumatic brain injur*", "TBI", "blast exposure", "concussion*"]
+    - name: Homelessness
+      weight: 15
+      keywords: ["homeless*", "housing instability"]
+    - name: Prosthetics, amputation and spinal cord injury
+      weight: 15
+      keywords: ["prosthe*", "amputat*", "spinal cord injur*", "exoskeleton*"]
+    - name: Opioids and substance use
+      weight: 12
+      keywords: ["opioid*", "buprenorphine", "naloxone", "fentanyl", "alcohol use disorder", "substance use disorder*"]
+    - name: Women veterans
+      weight: 12
+      keywords: ["women veterans", "female veterans"]
+    - name: GLP-1, diabetes and heart failure
+      weight: 12
+      keywords: ["GLP-1*", "semaglutide", "tirzepatide", "heart failure"]
+    - name: AI and digital health
+      weight: 12
+      keywords: ["artificial intelligence", "machine learning", "deep learning", "large language model*", "ChatGPT", "telehealth", "telemedicine", "telemental health"]
+    - name: Cancer
+      weight: 10
+      keywords: ["cancer*", "oncolog*", "carcinoma*", "lymphoma", "leukemia", "melanoma"]
+    - name: Dementia and brain health
+      weight: 10
+      keywords: ["dementia", "Alzheimer*", "Parkinson*", "cognitive decline"]
+    - name: COVID and infectious disease
+      weight: 10
+      keywords: ["long COVID", "COVID-19", "SARS-CoV-2", "antimicrobial resistance"]
+    - name: Caregivers and families
+      weight: 8
+      keywords: ["caregiver*"]
+    - name: Rural care and access
+      weight: 8
+      keywords: ["rural", "community care", "MISSION Act", "wait time*"]
+
+  # Prefix a keyword with "re:" to use a raw regular expression.
+  study_designs:
+    - name: Randomized trial
+      weight: 15
+      keywords: ["re:\\brandomi[sz]ed (?:controlled |clinical )?trial", "re:\\bcluster[- ]randomi[sz]ed", "RCT"]
+    - name: Meta-analysis / systematic review
+      weight: 8
+      keywords: ["meta-analys*", "systematic review"]
+    - name: Cooperative Studies Program
+      weight: 10
+      keywords: ["Cooperative Studies Program", "re:\\bCSP\\s*#?\\d{2,4}\\b"]
+    - name: Large national study
+      weight: 8
+      keywords: ["nationwide", "national cohort", "national sample", "re:\\b\\d{1,3}(?:,\\d{3})+\\s+(?:veterans|patients|participants|individuals|adults)\\b"]
+    - name: Target trial emulation
+      weight: 6
+      keywords: ["target trial emulation"]
+    - name: Registered clinical trial
+      weight: 5
+      keywords: ["re:\\bNCT\\d{8}\\b"]
+
+  # Journal tier uses OpenAlex "2-year mean citedness" (an impact-factor-like metric), with name overrides.
+  journal_tiers:
+    top_min_citedness: 10
+    mid_min_citedness: 4
+    top_weight: 25
+    mid_weight: 10
+    always_top: ["New England Journal of Medicine", "The New England Journal of Medicine", "JAMA", "The Lancet",
+                 "BMJ", "The BMJ", "Nature", "Science", "Cell", "Nature Medicine", "Annals of Internal Medicine",
+                 "JAMA Psychiatry", "JAMA Internal Medicine", "JAMA Network Open", "American Journal of Psychiatry"]
+    always_mid: ["Psychiatric Services", "Military Medicine", "Journal of General Internal Medicine",
+                 "Health Services Research", "Medical Care"]
+
+  funding:
+    ord_funded: 15
+    va_funded_only: 5
+
+  other:
+    open_access: 3
+    cited_5_plus: 5
+
+  penalties:
+    preprint: -5
+    conference_abstract: -15
+    editorial_or_letter: -10
+    erratum: -40
+    retracted: -100
+    non_health: -15

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VA Research Daily Update</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>VA Research Daily Update</h1>
+      <p id="meta">Loading…</p>
+    </div>
+    <div class="actions">
+      <button id="export">Export current view (CSV)</button>
+      <span class="divider"></span>
+      <a class="toplink" href="#method">How scoring works</a>
+    </div>
+  </header>
+
+  <div id="status" class="status" hidden></div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="filter-group">
+        <h2>Newsworthiness</h2>
+        <label><input type="checkbox" name="tier" value="High" checked> <span class="dot High"></span>High</label>
+        <label><input type="checkbox" name="tier" value="Medium" checked> <span class="dot Medium"></span>Medium</label>
+        <label><input type="checkbox" name="tier" value="Low" checked> <span class="dot Low"></span>Low</label>
+      </div>
+
+      <div class="filter-group">
+        <h2>Journal tier</h2>
+        <label><input type="checkbox" name="jtier" value="Top" checked> <span class="jt Top">Top journal</span></label>
+        <label><input type="checkbox" name="jtier" value="Mid" checked> <span class="jt Mid">Mid journal</span></label>
+        <label><input type="checkbox" name="jtier" value="Lower" checked> <span class="jt Lower">Lower journal</span></label>
+        <label><input type="checkbox" name="jtier" value="Preprint" checked> <span class="jt Preprint">Preprint</span></label>
+        <label><input type="checkbox" name="jtier" value="Not rated" checked> <span class="jt NotRated">Not rated</span></label>
+      </div>
+
+      <div class="filter-group">
+        <h2>Funding</h2>
+        <label><input id="vaFunded" type="checkbox"> VA funded only</label>
+        <label><input id="ordFunded" type="checkbox"> ORD funded only</label>
+        <select id="service" aria-label="ORD service">
+          <option value="">Any ORD service</option>
+          <option>BLR&amp;D</option>
+          <option>CSR&amp;D</option>
+          <option>HSR&amp;D</option>
+          <option>RR&amp;D</option>
+          <option>CSP</option>
+          <option>ORD (service not identified)</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <h2>More</h2>
+        <label><input id="flaggedOnly" type="checkbox"> Flagged only ★</label>
+        <label><input id="hideMinor" type="checkbox" checked> Hide conference abstracts, errata, letters &amp; editorials</label>
+        <label class="stack">Published on or after <input id="from" type="date"></label>
+        <label class="stack">Found in
+          <select id="source">
+            <option value="">Any source</option>
+            <option value="pubmed">PubMed</option>
+            <option value="openalex">OpenAlex</option>
+          </select>
+        </label>
+        <button id="reset" class="link">Reset filters</button>
+      </div>
+
+    </aside>
+
+    <main>
+      <div class="daybar">
+        <span class="label">Added</span>
+        <div id="days" class="pills"></div>
+      </div>
+      <div class="searchbar">
+        <input id="q" type="search" placeholder="Search titles, abstracts, authors, journals, funding…">
+        <label>Sort <select id="sort">
+          <option value="score">Most newsworthy</option>
+          <option value="pub_date">Newest publication</option>
+        </select></label>
+      </div>
+      <div id="summary" class="summary"></div>
+      <div id="sections"></div>
+      <section id="method" class="method"></section>
+    </main>
+  </div>
+
+  <aside id="detail" class="drawer" hidden>
+    <button id="closeDetail" class="close" aria-label="Close">×</button>
+    <div id="detailBody"></div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>

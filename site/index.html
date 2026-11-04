@@ -3,14 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VA Research Daily Update</title>
+  <title>VA Research Radar</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
-    <div>
-      <h1>VA Research Daily Update</h1>
-      <p id="meta">Loading…</p>
+    <div class="ring-bg" aria-hidden="true"></div>
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="21" fill="none" stroke="#fff" stroke-width="2.2"/>
+        <circle cx="24" cy="24" r="13" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>
+        <circle cx="24" cy="24" r="5" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/>
+        <path d="M24 24 L24 3 A21 21 0 0 1 42.2 13.5 Z" fill="#fdb81e" opacity=".9"/>
+        <circle cx="35" cy="14" r="2.8" fill="#fdb81e"/>
+      </svg>
+      <div>
+        <div class="eyebrow">U.S. Department of Veterans Affairs</div>
+        <h1>Research Radar</h1>
+        <div class="tagline">Spotting the VA research that matters, every day.</div>
+        <p id="meta">Loading…</p>
+      </div>
     </div>
     <div class="actions">
       <button id="export">Export current view (CSV)</button>

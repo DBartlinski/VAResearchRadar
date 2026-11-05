@@ -1,5 +1,5 @@
 {
-  "started": "2026-11-05T09:30:31",
+  "started": "2026-11-05T14:32:07",
   "start_date": "2026-10-01",
   "sources": {
     "pubmed": {
@@ -7,7 +7,7 @@
       "since": "2026-10-01"
     },
     "openalex": {
-      "records": 1310,
+      "records": 1312,
       "since": "2026-10-01",
       "resolved": {
         "institutions": [],
@@ -17,7 +17,7 @@
   },
   "warnings": [],
   "total": 1392,
-  "new": 39,
+  "new": 0,
   "tiers": {
     "High": 194,
     "Medium": 313,
@@ -30,7 +30,7 @@
     "Preprint": 141,
     "Not rated": 33
   },
-  "finished": "2026-11-05T09:31:37",
+  "finished": "2026-11-05T14:32:57",
   "scoring": {
     "tiers": {
       "high": 45,

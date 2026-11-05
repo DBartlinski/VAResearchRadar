@@ -252,6 +252,17 @@ function renderSummary() {
     `<div class="stat ${cls}"><div class="num">${num}</div><div class="lbl">${esc(lbl)}</div></div>`).join("");
 }
 
+function previewText(abstract) {
+  const clean = String(abstract || "")
+    .replace(/\b(?:BACKGROUND|OBJECTIVES?|PURPOSE|AIMS?|METHODS?|DESIGN|SETTING|PARTICIPANTS|RESULTS?|FINDINGS|CONCLUSIONS?|IMPORTANCE|MAIN OUTCOMES? AND MEASURES?)\s*:\s*/g, "")
+    .replace(/\s+/g, " ").trim();
+  const sentences = clean.match(/[^.!?]+(?:[.!?]+(?=\s+[A-Z(])|[.!?]*$)/g)?.map((s) => s.trim()).filter((s) => s.length > 20) || [];
+  if (!sentences.length) return "";
+  const pick = sentences.length <= 3 ? sentences : [sentences[0], ...sentences.slice(-2)];
+  const text = pick.join(" ");
+  return text.length > 480 ? text.slice(0, 477).replace(/\s+\S*$/, "") + "…" : text;
+}
+
 function cardHtml(r) {
   const flagged = state.flags.has(r.key);
   const tags = [];
@@ -267,6 +278,7 @@ function cardHtml(r) {
     r.pub_date ? `Published ${esc(fmtDate(r.pub_date))}` : "",
     esc(shortType(r)),
   ].filter(Boolean).join(" · ");
+  const preview = previewText(r.abstract);
 
   return `
     <article class="card ${esc(r.tier)}${flagged ? " flagged" : ""}" data-key="${esc(r.key)}">
@@ -275,6 +287,7 @@ function cardHtml(r) {
         <div class="card-title">${esc(r.title || "(untitled)")}</div>
         <div class="card-meta"><span class="jt ${jtClass(r.journal_tier)}">${esc(jtLabel(r.journal_tier))}</span> ${meta}</div>
         ${r.first_va_author ? `<div class="card-affil" title="${esc(r.first_va_author.cleaned ? "First VA-affiliated author" : "First VA-affiliated author (affiliation shown as published)")}">First VA author: <strong>${esc(r.first_va_author.name)}</strong> · ${esc(r.first_va_author.facility)}</div>` : ""}
+        ${preview ? `<p class="card-preview">${esc(preview)}</p>` : ""}
         <div class="card-tags">${tags.join("")}</div>
       </div>
       <div class="card-score"><div class="num">${r.score}</div><div class="lbl">${esc(r.tier)}</div></div>
@@ -481,3 +494,11 @@ $("closeDetail").addEventListener("click", () => ($("detail").hidden = true));
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("detail").hidden = true; });
 
 loadData();
+
+// Pick up data from the daily deploy without a page reload.
+setInterval(async () => {
+  try {
+    const m = await fetch("data/meta.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
+    if (m && m.finished !== state.meta?.finished) loadData();
+  } catch { /* offline; try again next tick */ }
+}, 10 * 60 * 1000);

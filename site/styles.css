@@ -111,6 +111,7 @@ button.link { border: 0; background: none; color: var(--blue); padding: 4px 0; t
 .card-title { font-size: 16px; font-weight: 600; line-height: 1.35; margin-bottom: 4px; }
 .card-meta { font-size: 13.5px; color: var(--muted); margin-bottom: 6px; }
 .card-meta .journal { color: var(--text); font-weight: 500; }
+.card-preview { margin: 0 0 8px; font-size: 13.5px; line-height: 1.45; color: var(--text); }
 .card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
 .card-score { text-align: center; align-self: start; }
 .card-score .num { font-size: 22px; font-weight: 700; line-height: 1; }

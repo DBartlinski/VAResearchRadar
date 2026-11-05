@@ -47,6 +47,18 @@ def run(cfg=None, log=print):
         for r in stored:
             r["_stored"] = True
 
+        if cfg.get("pubmed", {}).get("enabled"):
+            missing = sorted({r["pmid"] for r in pieces + stored
+                              if r.get("pmid") and not r.get("abstract") and "pubmed" not in r["sources"]})
+            if missing:
+                try:
+                    for p in pubmed.fetch_by_pmids(cfg, missing, log):
+                        p["_stored"] = False
+                        p["first_seen"] = started
+                        pieces.append(p)
+                except Exception as e:
+                    summary["warnings"].append(f"PubMed abstract backfill failed: {e}")
+
         scorer = Scorer(cfg["scoring"])
         merged = [merge_records(g) for g in group_records(pieces + stored)]
         merged = [r for r in merged if r.get("pub_date") and r["pub_date"] >= start_date.isoformat()]

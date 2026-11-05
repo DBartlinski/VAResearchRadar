@@ -100,6 +100,24 @@ def parse_article(art):
     return rec
 
 
+def fetch_by_pmids(cfg, pmids, log=print):
+    """Fetch specific PubMed records (used to fill abstracts missing from other sources)."""
+    s = make_session(cfg.get("contact_email", ""))
+    api_key = os.environ.get("NCBI_API_KEY")
+    base = {"tool": "vadaily", "email": cfg.get("contact_email") or None, "api_key": api_key}
+    delay = 0.12 if api_key else 0.4
+    records = []
+    for i in range(0, len(pmids), BATCH):
+        time.sleep(delay)
+        r = s.post(EUTILS + "efetch.fcgi", data={
+            **base, "db": "pubmed", "id": ",".join(pmids[i:i + BATCH]), "retmode": "xml",
+        }, timeout=120)
+        r.raise_for_status()
+        records.extend(parse_article(a) for a in ET.fromstring(r.content).iter("PubmedArticle"))
+    log(f"PubMed: backfilled {len(records)} of {len(pmids)} records missing abstracts")
+    return records
+
+
 def fetch(cfg, since, until, log=print):
     """Fetch PubMed records added (Entrez date) between since and until."""
     pc = cfg["pubmed"]

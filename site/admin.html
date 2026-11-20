@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Daily Update – Administrator Guide</title>
+<style>
+:root {
+  --va-dark: #162e51;
+  --va-blue: #005ea2;
+  --va-blue-dark: #1a4480;
+  --va-gold: #face00;
+  --va-gray-5: #f0f0f0;
+  --va-gray-10: #e6e6e6;
+  --va-gray-30: #adadad;
+  --va-gray-60: #565c65;
+  --va-ink: #1b1b1b;
+  --va-info: #e7f6f8;
+  --va-info-bar: #00bde3;
+  --va-warn: #faf3d1;
+  --va-warn-bar: #ffbe2e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 1rem; }
+body { margin: 0; font: 400 1.0625rem/1.6 "Source Sans Pro", "Source Sans 3", "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--va-ink); background: #fff; }
+.banner { background: var(--va-gray-5); font-size: .8125rem; padding: .35rem 1rem; color: var(--va-ink); }
+.banner b { font-weight: 700; }
+header.site { background: var(--va-dark); color: #fff; padding: 1.5rem 1rem 1.75rem; border-bottom: 4px solid var(--va-gold); }
+.wrap { max-width: 70rem; margin: 0 auto; padding: 0 1rem; }
+header.site h1 { font: 700 2.125rem/1.2 Bitter, Georgia, "Times New Roman", serif; margin: 0 0 .5rem; }
+header.site p { margin: 0; max-width: 42rem; color: #dfe1e2; }
+.layout { display: grid; grid-template-columns: 15rem 1fr; gap: 2.5rem; padding: 2rem 0 4rem; }
+nav.side { position: sticky; top: 1rem; align-self: start; font-size: .975rem; }
+nav.side h2 { font: 700 1rem Bitter, Georgia, serif; margin: 0 0 .5rem; padding-bottom: .5rem; border-bottom: 1px solid var(--va-gray-10); }
+nav.side ul { list-style: none; margin: 0; padding: 0; }
+nav.side a { display: block; padding: .4rem .75rem; color: var(--va-ink); text-decoration: none; border-left: 4px solid transparent; }
+nav.side a:hover { background: var(--va-gray-5); border-left-color: var(--va-blue); color: var(--va-blue); }
+main { min-width: 0; max-width: 46rem; }
+h2 { font: 700 1.75rem/1.25 Bitter, Georgia, serif; color: var(--va-dark); margin: 2.75rem 0 .75rem; padding-top: 1.5rem; border-top: 1px solid var(--va-gray-10); }
+h2:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
+h3 { font: 700 1.25rem/1.3 Bitter, Georgia, serif; color: var(--va-dark); margin: 1.75rem 0 .5rem; }
+p, li { max-width: 40rem; }
+a { color: var(--va-blue); }
+a:visited { color: #4c2c92; }
+a:focus-visible, button:focus-visible { outline: 3px solid #2491ff; outline-offset: 2px; }
+code { font: .9em Consolas, "Courier New", monospace; background: var(--va-gray-5); padding: .1rem .35rem; border-radius: 3px; }
+pre { background: #1b1b1b; color: #f0f0f0; padding: 1rem; border-radius: 4px; overflow-x: auto; line-height: 1.45; }
+pre code { background: none; padding: 0; color: inherit; }
+.alert { padding: 1rem 1.25rem; margin: 1.25rem 0; border-left: 8px solid var(--va-info-bar); background: var(--va-info); max-width: 40rem; }
+.alert.warn { border-left-color: var(--va-warn-bar); background: var(--va-warn); }
+.alert h3 { margin: 0 0 .25rem; font-size: 1.0625rem; }
+.alert p { margin: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .975rem; }
+th, td { border: 1px solid var(--va-ink); padding: .5rem .75rem; text-align: left; vertical-align: top; }
+th { background: var(--va-gray-10); }
+.steps { counter-reset: s; list-style: none; padding: 0; }
+.steps > li { counter-increment: s; position: relative; padding: 0 0 1rem 3rem; }
+.steps > li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; border-radius: 50%; background: var(--va-blue-dark); color: #fff; font-weight: 700; text-align: center; line-height: 2rem; }
+footer { background: var(--va-dark); color: #dfe1e2; padding: 1.5rem 0; font-size: .9rem; }
+@media (max-width: 52rem) {
+  .layout { grid-template-columns: 1fr; gap: 1rem; }
+  nav.side { position: static; }
+  header.site h1 { font-size: 1.75rem; }
+}
+</style>
+</head>
+<body>
+<div class="banner"><div class="wrap"><b>Internal reference.</b> Administrator documentation for the Daily Update dashboard.</div></div>
+<header class="site">
+  <div class="wrap">
+    <h1>Daily Update – Administrator Guide</h1>
+    <p>Notes and instructions for running, configuring and maintaining the pipeline that aggregates, scores and publishes Veterans Affairs research publications.</p>
+  </div>
+</header>
+
+<div class="wrap layout">
+  <nav class="side" aria-label="On this page">
+    <h2>On this page</h2>
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#setup">Local setup</a></li>
+      <li><a href="#running">Running the pipeline</a></li>
+      <li><a href="#publishing">Publishing</a></li>
+      <li><a href="#config">Configuration</a></li>
+      <li><a href="#scoring">Scoring</a></li>
+      <li><a href="#compare">Dimensions comparison</a></li>
+      <li><a href="#data">Data and files</a></li>
+      <li><a href="#troubleshooting">Troubleshooting</a></li>
+    </ul>
+  </nav>
+
+  <main id="main">
+    <h2 id="overview">Overview</h2>
+    <p>Daily Update is a daily pipeline that aggregates, scores and publishes Veterans Affairs research publications from <strong>PubMed</strong>, <strong>OpenAlex</strong> and <strong>Crossref</strong>, with funding attribution and a static dashboard.</p>
+    <div class="alert warn">
+      <h3>Dimensions is a benchmark only</h3>
+      <p>Dimensions is not a data source (<code>dimensions.ingest: false</code> in <code>config/settings.yaml</code>). Its exports may not be redistributed, so the public build never reads them.</p>
+    </div>
+    <h3>How a run works</h3>
+    <ol>
+      <li>Query PubMed, OpenAlex and Crossref for records within the lookback window.</li>
+      <li>Drop records with no VA affiliation and no VA funding evidence.</li>
+      <li>Attribute funding and score each record into High, Medium or Low priority.</li>
+      <li>Store records in the local database, keeping first-seen dates for the “Added” day pills.</li>
+      <li>Write the dashboard data files to <code>site/data</code>.</li>
+    </ol>
+
+    <h2 id="setup">Local setup</h2>
+    <ol class="steps">
+      <li>Install Python 3.13.</li>
+      <li>Create and activate a virtual environment.
+<pre><code>python -m venv .venv
+.venv\Scripts\Activate.ps1</code></pre></li>
+      <li>Install dependencies.
+<pre><code>pip install -r requirements.txt</code></pre></li>
+      <li>Optionally set <code>NCBI_API_KEY</code> and <code>OPENALEX_API_KEY</code> to raise API rate limits, and set <code>contact_email</code> in <code>config/settings.yaml</code>.</li>
+    </ol>
+
+    <h2 id="running">Running the pipeline</h2>
+    <h3>Command line</h3>
+<pre><code>python -m vadaily.pipeline</code></pre>
+    <h3>Local dashboard</h3>
+    <p>Start the Flask app, then open <code>http://localhost:5000</code> (port set under <code>server.port</code>).</p>
+<pre><code>python app.py</code></pre>
+    <p>The app serves the <code>site</code> folder and provides a refresh endpoint (<code>POST /api/refresh</code>) that runs the pipeline. Refresh requests must be JSON, and only one refresh can run at a time.</p>
+    <h3>Tests</h3>
+<pre><code>pytest</code></pre>
+
+    <h2 id="publishing">Publishing</h2>
+    <p>The public site is built and deployed to GitHub Pages by the workflow <strong>Build and deploy public site (PubMed + OpenAlex only)</strong> in <code>.github/workflows/pages.yml</code>.</p>
+    <table>
+      <thead><tr><th scope="col">Item</th><th scope="col">Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Schedule</td><td>Daily at 11:00 UTC; can also be run manually with <em>Run workflow</em> (<code>workflow_dispatch</code>).</td></tr>
+        <tr><td>Secrets</td><td><code>OPENALEX_API_KEY</code> and <code>NCBI_API_KEY</code> (repository secrets).</td></tr>
+        <tr><td>Dimensions</td><td>Workflow sets <code>VADAILY_NO_DIMENSIONS=1</code>, so Dimensions data is never read.</td></tr>
+        <tr><td>Database cache</td><td>The <code>data</code> folder is cached between runs to preserve first-seen dates.</td></tr>
+        <tr><td>Artifact</td><td>The contents of <code>site</code> are uploaded and deployed.</td></tr>
+      </tbody>
+    </table>
+    <div class="alert">
+      <h3>Manual republish</h3>
+      <p>In GitHub, open <strong>Actions</strong>, choose the workflow, and select <strong>Run workflow</strong>. Changes to static pages in <code>site</code> go live on the next run after they are pushed to <code>main</code>.</p>
+    </div>
+
+    <h2 id="config">Configuration</h2>
+    <p>All settings live in <code>config/settings.yaml</code>.</p>
+    <table>
+      <thead><tr><th scope="col">Setting</th><th scope="col">Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>start_date</code></td><td>Publications dated before this are ignored.</td></tr>
+        <tr><td><code>lookback_days</code></td><td>How many days back PubMed and OpenAlex are re-queried each run (never earlier than <code>start_date</code>).</td></tr>
+        <tr><td><code>contact_email</code></td><td>Contact email sent with NCBI and OpenAlex API requests.</td></tr>
+        <tr><td><code>paths</code></td><td>Locations of the database, site output and reports.</td></tr>
+        <tr><td><code>pubmed</code></td><td>Enable flag and the affiliation and grant query.</td></tr>
+        <tr><td><code>openalex</code></td><td>Institution and funder IDs, plus raw affiliation text searches.</td></tr>
+        <tr><td><code>crossref</code></td><td>Funder DOIs and affiliation text searches, which catch conference abstracts and journals the other sources miss.</td></tr>
+        <tr><td><code>require_va_evidence</code></td><td>Drops records with no VA affiliation and no VA funding evidence.</td></tr>
+        <tr><td><code>scoring</code></td><td>Tiers, topics, study designs, journal tiers, funding and penalties (see below).</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="scoring">Scoring</h2>
+    <p>Each record receives a point total. Totals of <strong>45 or more</strong> are High, <strong>25 or more</strong> are Medium, and the rest are Low (<code>scoring.tiers</code>).</p>
+    <ul>
+      <li><strong>Veteran in title</strong>: keywords such as veteran*, military, service member*.</li>
+      <li><strong>Topics</strong>: weighted keyword groups, for example suicide prevention, toxic exposures / PACT Act, Million Veteran Program, PTSD, TBI and homelessness.</li>
+      <li><strong>Study designs</strong>: randomized trials, meta-analyses, Cooperative Studies Program, large national studies and more. Prefix a keyword with <code>re:</code> to use a raw regular expression.</li>
+      <li><strong>Journal tier</strong>: based on OpenAlex 2-year mean citedness, with name overrides in <code>always_top</code> and <code>always_mid</code>.</li>
+      <li><strong>Funding</strong>: higher weight for ORD-funded than VA-funded-only work.</li>
+      <li><strong>Penalties</strong>: preprints, conference abstracts, editorials and letters, errata, retractions and non-health records.</li>
+    </ul>
+    <p>To tune results, edit the weights or keywords and rerun the pipeline. Scores are recalculated from the stored records.</p>
+
+    <h2 id="compare">Dimensions comparison</h2>
+    <p>To compare the tool against a Dimensions export (VA scope, capped at 500 rows):</p>
+<pre><code>python -m compare.report "Dimensions comparison\&lt;export folder&gt;" &lt;label&gt;</code></pre>
+    <p>This writes <code>reports/dimensions-gaps-&lt;label&gt;.csv</code> and <code>reports/dimensions-comparison-&lt;label&gt;.md</code>.</p>
+    <div class="alert warn">
+      <h3>Do not commit Dimensions files</h3>
+      <p>The Dimensions exports, comparison folder and reports are excluded in <code>.gitignore</code>. Keep them out of the repository and the public site.</p>
+    </div>
+
+    <h2 id="data">Data and files</h2>
+    <table>
+      <thead><tr><th scope="col">Path</th><th scope="col">Contents</th></tr></thead>
+      <tbody>
+        <tr><td><code>vadaily/</code></td><td>Pipeline code: sources, scoring, funding, journals, store and exports.</td></tr>
+        <tr><td><code>config/settings.yaml</code></td><td>All configuration.</td></tr>
+        <tr><td><code>site/</code></td><td>Static dashboard (HTML, CSS, JS) and generated <code>site/data</code>.</td></tr>
+        <tr><td><code>data/</code></td><td>Local database; not committed.</td></tr>
+        <tr><td><code>compare/</code></td><td>Dimensions benchmark tool.</td></tr>
+        <tr><td><code>tests/</code></td><td>Automated tests.</td></tr>
+        <tr><td><code>reports/</code></td><td>Generated comparison reports; not committed.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="troubleshooting">Troubleshooting</h2>
+    <h3>“Added” dates reset</h3>
+    <p>The database cache (<code>data</code>) was not restored. Check the cache step in the workflow run log. The first run after a cache miss treats every record as new.</p>
+    <h3>Rate-limit or empty results</h3>
+    <p>Confirm the <code>NCBI_API_KEY</code> and <code>OPENALEX_API_KEY</code> secrets are set and that <code>contact_email</code> is filled in.</p>
+    <h3>A record is missing</h3>
+    <p>It may be dated before <code>start_date</code>, or lack VA affiliation and funding evidence while <code>require_va_evidence</code> is on. Add an affiliation query to the relevant source if needed.</p>
+    <h3>Refresh returns an error</h3>
+    <p>A 409 means a refresh is already running; a 415 means the request was not JSON. Other failures are logged by the Flask app.</p>
+    <h3>Workflow fails to deploy</h3>
+    <p>Confirm GitHub Pages is enabled for the repository and that the workflow has Pages and ID-token permissions.</p>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">Daily Update administrator guide. Not linked from the dashboard.</div>
+</footer>
+</body>
+</html>

@@ -1,5 +1,5 @@
 {
-  "started": "2026-11-24T20:55:40",
+  "started": "2026-11-24T20:59:26",
   "start_date": "2026-10-01",
   "sources": {
     "pubmed": {
@@ -17,7 +17,7 @@
   },
   "warnings": [],
   "total": 2466,
-  "new": 35,
+  "new": 0,
   "tiers": {
     "High": 341,
     "Medium": 571,
@@ -30,7 +30,7 @@
     "Preprint": 224,
     "Not rated": 72
   },
-  "finished": "2026-11-24T20:56:27",
+  "finished": "2026-11-24T21:00:08",
   "scoring": {
     "tiers": {
       "high": 45,

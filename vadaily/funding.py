@@ -33,10 +33,6 @@ VA_AFFIL_RE = re.compile(
     r"(?i:veterans\s+affairs|veterans\s+health|veterans\s+administration|department\s+of\s+veterans"
     r"|VA\s+(?:medical|health\s*care|healthcare))"
     r"|\bVAMC\b|\bVAHCS\b|\bVISN\b|\bVA\s+(?:[A-Z][\w.]+\s+){1,3}(?:Health|Medical)"
-    # "VA" alone, but not the Virginia state abbreviation (", VA" or "VA 22903").
-    r"|(?<!,\s)(?<!,)\bVA\b(?!\s*[,\d])"
-    r"|\bMIRECC\b|\bGRECC\b|Mental Illness Research,? Education"
-    r"|Geriatric Research,? Education,? and Clinical"
 )
 SUPPORT_RE = re.compile(r"\b(?:support\w*|fund\w*|award\w*|grant\w*|merit|sponsor\w*|financ\w*)\b", re.I)
 DISCLAIMER_RE = re.compile(

@@ -373,7 +373,7 @@ function showDetail(r) {
 async function refresh() {
   const btn = $("refresh");
   btn.disabled = true;
-  showStatus("Refreshing… querying PubMed, OpenAlex and Crossref. This can take a few minutes.");
+  showStatus("Refreshing… reading Dimensions exports and querying PubMed and OpenAlex. This can take a few minutes.");
   try {
     const res = await fetch("api/refresh", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
     const body = await res.json().catch(() => ({}));

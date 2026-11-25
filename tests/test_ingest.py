@@ -55,21 +55,3 @@ def test_merge_by_doi_and_pmid_with_dimensions_priority():
     assert merged["funder"] == "VA; BLRD VA"
     assert merged["sources"] == ["dimensions", "pubmed", "openalex"]
     assert merged["first_seen"] == "2026-11-04T09:00:00"
-
-
-def test_pubmed_future_issue_date_falls_back_to_entrez_date():
-    import xml.etree.ElementTree as ET
-    from vadaily.sources.pubmed import parse_article
-
-    xml = ("<PubmedArticle><MedlineCitation><PMID>1</PMID><Article><ArticleTitle>T</ArticleTitle>"
-           "<Journal><JournalIssue><PubDate><Year>2026</Year><Month>Dec</Month></PubDate></JournalIssue>"
-           "<Title>J</Title></Journal></Article></MedlineCitation><PubmedData><History>"
-           "<PubMedPubDate PubStatus='pubmed'><Year>2026</Year><Month>11</Month><Day>9</Day></PubMedPubDate>"
-           "</History></PubmedData></PubmedArticle>")
-    assert parse_article(ET.fromstring(xml))["pub_date"] == "2026-11-09"
-
-
-def test_merge_keeps_va_trusted_if_any_piece_is_trusted():
-    a = {"sources": ["pubmed"], "doi": "10.1/t", "va_trusted": False}
-    b = {"sources": ["openalex"], "doi": "10.1/t", "va_trusted": True}
-    assert merge_records([a, b])["va_trusted"] is True

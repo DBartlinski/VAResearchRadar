@@ -1,6 +1,6 @@
 from .utils import join_unique
 
-SOURCE_PRIORITY = {"dimensions": 0, "pubmed": 1, "openalex": 2, "crossref": 3}
+SOURCE_PRIORITY = {"dimensions": 0, "pubmed": 1, "openalex": 2}
 
 FIELDS = [
     "dimensions_id", "pmid", "pmcid", "doi", "openalex_id", "title", "abstract", "journal",
@@ -15,8 +15,6 @@ TEXT_FIELDS = ["funding_text", "acknowledgements"]
 def empty_record(source):
     rec = {f: None for f in FIELDS + UNION_FIELDS + TEXT_FIELDS}
     rec["sources"] = [source]
-    # True when a source matched by VA institution or VA funder ID rather than by text search.
-    rec["va_trusted"] = False
     return rec
 
 
@@ -81,7 +79,6 @@ def merge_records(pieces):
         out[f] = "\n\n".join(parts) or None
     out["sources"] = sorted({s for p in pieces for s in p.get("sources") or []},
                             key=lambda s: SOURCE_PRIORITY.get(s, 9))
-    out["va_trusted"] = any(p.get("va_trusted") for p in pieces)
     seen = [p["first_seen"] for p in pieces if p.get("first_seen")]
     out["first_seen"] = min(seen) if seen else None
     return out

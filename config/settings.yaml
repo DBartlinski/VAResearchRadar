@@ -22,33 +22,20 @@ pubmed:
   query: >-
     ("Veterans Affairs"[ad] OR "Veterans Health Administration"[ad] OR "Veterans Administration"[ad]
     OR "VA Medical Center"[ad] OR "VA Healthcare"[ad] OR "VA Health Care"[ad] OR "VAMC"[ad]
-    OR "VAHCS"[ad] OR "Department of Veterans"[ad] OR "Veterans Health"[ad] OR "Veterans Affairs Medical"[ad]
-    OR (VA[ad] AND ("Healthcare System"[ad] OR "Health Care System"[ad] OR "Medical Center"[ad] OR "Health System"[ad]))
-    OR "BLRD VA"[gr] OR "CSRD VA"[gr] OR "HSRD VA"[gr] OR "RRD VA"[gr] OR "CSP VA"[gr]
-    OR "Veterans"[gr] OR "VA"[gr] OR "Veterans Affairs"[gr] OR "Clinical Science Research and Development"[gr]
-    OR "Rehabilitation Research and Development"[gr] OR "Health Services Research and Development"[gr]
-    OR "Biomedical Laboratory Research and Development"[gr])
+    OR "VAHCS"[ad] OR "Department of Veterans"[ad]
+    OR "BLRD VA"[gr] OR "CSRD VA"[gr] OR "HSRD VA"[gr] OR "RRD VA"[gr] OR "CSP VA"[gr])
 
 openalex:
   enabled: true
   # Leave empty to auto-resolve "Department of Veterans Affairs".
   institution_ids: [I1322918889]  # United States Department of Veterans Affairs (includes child institutions)
   funder_ids: [F4320306127]       # U.S. Department of Veterans Affairs
-  # Raw affiliation text searches, for VA affiliations not yet linked to the institution above.
-  affiliation_queries: ["Veterans Affairs", "Veterans Health Administration", "VA Medical Center", "VA Healthcare System", "VA Health Care System", "VA Hospital", "VA Greater", "MIRECC"]
 
 crossref:
   enabled: true
   # Catches conference abstracts and journals whose VA affiliation OpenAlex/PubMed miss.
   funder_dois: ["10.13039/100000738"]  # U.S. Department of Veterans Affairs
   affiliation_queries: ["Veterans Affairs", "VA Medical Center", "VA Healthcare System", "VA Health Care System", "Veterans Health Administration", "VA Hospital", "VA Greater", "MIRECC"]
-
-# Dimensions exports are a benchmark for the compare tool only; they are not ingested unless enabled.
-dimensions:
-  ingest: false
-
-# Drop records with no VA affiliation and no VA funding evidence.
-require_va_evidence: true
 
 scoring:
   tiers:

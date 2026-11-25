@@ -136,29 +136,18 @@ def fetch(cfg, since, until, log=print):
             resolved["funders"].append(hit)
 
     date_filter = f"from_publication_date:{since.isoformat()},to_publication_date:{until.isoformat()}"
-    works, trusted = {}, set()
+    works = {}
     if inst_ids:
         for w in _works(s, cfg, f"authorships.institutions.lineage:{'|'.join(inst_ids)},{date_filter}", log):
             works[w["id"]] = w
-            trusted.add(w["id"])
-    for term in oc.get("affiliation_queries") or []:
-        # Catches VA affiliations OpenAlex has not yet linked to the VA institution above.
-        for w in _works(s, cfg, f'raw_affiliation_strings.search:"{term}",{date_filter}', log):
-            works.setdefault(w["id"], w)
     if funder_ids:
         # Funder filter name differs between OpenAlex API versions.
         for field in ("grants.funder", "funders.id"):
             try:
                 for w in _works(s, cfg, f"{field}:{'|'.join(funder_ids)},{date_filter}", log):
                     works[w["id"]] = w
-                    trusted.add(w["id"])
                 break
             except requests.HTTPError as e:
                 if e.response is None or e.response.status_code != 400:
                     raise
-    out = []
-    for wid, w in works.items():
-        rec = parse_work(w)
-        rec["va_trusted"] = wid in trusted
-        out.append(rec)
-    return out, resolved
+    return [parse_work(w) for w in works.values()], resolved

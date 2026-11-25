@@ -68,12 +68,3 @@ def test_va_affiliation():
     assert classify(rec(affiliations="Smith, J (VA Boston Healthcare System)"))["va_affiliated"]
     assert classify(rec(research_orgs="Veterans Health Administration"))["va_affiliated"]
     assert not classify(rec(affiliations="University of Virginia, Charlottesville, VA"))["va_affiliated"]
-
-
-def test_va_affiliation_variants_and_virginia_exclusion():
-    for text in ("Edward Hines Jr. VA Hospital, Hines, IL", "VA Greater Los Angeles - UCLA",
-                 "VA Center for Health Information and Communication",
-                 "Mental Illness Research, Education, and Clinical Center"):
-        assert classify(rec(affiliations=text))["va_affiliated"], text
-    for text in ("Virginia Tech, Blacksburg VA 24061 USA", "University of Richmond, Richmond, VA"):
-        assert not classify(rec(affiliations=text))["va_affiliated"], text

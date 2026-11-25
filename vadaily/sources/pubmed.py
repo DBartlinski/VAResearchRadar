@@ -54,11 +54,8 @@ def parse_article(art):
     rec["journal"] = article.findtext("Journal/Title")
     issns = [article.findtext("Journal/ISSN"), cit.findtext("MedlineJournalInfo/ISSNLinking")]
     rec["issn"] = "; ".join(dict.fromkeys(i for i in issns if i)) or None
-    issue_date = best_date(_date(article.find("ArticleDate")),
-                           _date(article.find("Journal/JournalIssue/PubDate")))
-    # A future issue month (e.g. "2026 Dec") would hide a paper that is already online.
-    entrez = _date(art.find("PubmedData/History/PubMedPubDate[@PubStatus='pubmed']"))
-    rec["pub_date"] = entrez if issue_date and entrez and issue_date > entrez else issue_date
+    rec["pub_date"] = best_date(_date(article.find("ArticleDate")),
+                                _date(article.find("Journal/JournalIssue/PubDate")))
 
     authors, affils = [], []
     for au in article.findall("AuthorList/Author"):

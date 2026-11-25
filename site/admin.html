@@ -91,10 +91,10 @@ footer { background: var(--va-dark); color: #dfe1e2; padding: 1.5rem 0; font-siz
 
   <main id="main">
     <h2 id="overview">Overview</h2>
-    <p>VA Research Radar is a daily pipeline that aggregates, scores and publishes Veterans Affairs research publications from <strong>PubMed</strong> and <strong>OpenAlex</strong>, with funding attribution. It is published as a static dashboard on GitHub Pages.</p>
+    <p>VA Research Radar is a daily pipeline that aggregates, scores and publishes Veterans Affairs research publications from <strong>PubMed</strong>, <strong>OpenAlex</strong> and <strong>Crossref</strong>, with funding attribution. It is published as a static dashboard on GitHub Pages.</p>
     <h3>How a run works</h3>
     <ol>
-      <li>Query PubMed and OpenAlex for records within the lookback window.</li>
+      <li>Query PubMed, OpenAlex and Crossref for records within the lookback window.</li>
       <li>Merge duplicates across sources and classify VA funding.</li>
       <li>Score each record into High, Medium or Low priority.</li>
       <li>Store records in the database (<code>data/vadaily.db</code>), keeping first-seen dates for the “Added” day pills.</li>

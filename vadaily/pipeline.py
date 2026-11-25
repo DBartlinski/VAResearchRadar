@@ -5,7 +5,7 @@ from . import funding, journals, store
 from .config import load_config, path_for
 from .records import canonical_key, group_records, merge_records
 from .scoring import Scorer
-from .sources import openalex, pubmed
+from .sources import crossref, openalex, pubmed
 
 
 def _now():
@@ -39,6 +39,14 @@ def run(cfg=None, log=print):
                 summary["sources"]["openalex"] = {"records": len(recs), "since": since.isoformat(), "resolved": resolved}
             except Exception as e:
                 summary["warnings"].append(f"OpenAlex failed: {e}")
+
+        if cfg.get("crossref", {}).get("enabled"):
+            try:
+                recs = crossref.fetch(cfg, since, today, log)
+                pieces += recs
+                summary["sources"]["crossref"] = {"records": len(recs), "since": since.isoformat()}
+            except Exception as e:
+                summary["warnings"].append(f"Crossref failed: {e}")
 
         for p in pieces:
             p["_stored"] = False

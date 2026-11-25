@@ -8,8 +8,10 @@ lookback_days: 45
 contact_email: ""
 
 paths:
+  dimensions_folder: Dimensions-data
   database: data/vadaily.db
   site: site
+  reports: reports
 
 pubmed:
   enabled: true
@@ -25,6 +27,12 @@ openalex:
   # Leave empty to auto-resolve "Department of Veterans Affairs".
   institution_ids: [I1322918889]  # United States Department of Veterans Affairs (includes child institutions)
   funder_ids: [F4320306127]       # U.S. Department of Veterans Affairs
+
+crossref:
+  enabled: true
+  # Catches conference abstracts and journals whose VA affiliation OpenAlex/PubMed miss.
+  funder_dois: ["10.13039/100000738"]  # U.S. Department of Veterans Affairs
+  affiliation_queries: ["Veterans Affairs", "VA Medical Center", "VA Healthcare System", "VA Health Care System", "Veterans Health Administration", "VA Hospital", "VA Greater", "MIRECC"]
 
 scoring:
   tiers:

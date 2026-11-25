@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Tool vs Dimensions</title>
+<style>
+body{font:14px system-ui,sans-serif;margin:0;background:#f4f6f8;color:#1b2733}
+header{background:#0b3d63;color:#fff;padding:14px 24px}header h1{margin:0;font-size:20px}header small{opacity:.8}
+main{padding:20px 24px;max-width:1300px;margin:auto}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.card{background:#fff;border-radius:8px;padding:14px;box-shadow:0 1px 3px #0002}
+.card b{display:block;font-size:26px}.card span{color:#5b6b7a}
+.panel{background:#fff;border-radius:8px;padding:16px;margin-top:16px;box-shadow:0 1px 3px #0002}
+h2{margin:0 0 10px;font-size:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.row{display:flex;align-items:center;gap:8px;margin:3px 0;font-size:13px}.row .l{width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar{height:12px;background:#0b6fb8;border-radius:3px}.m{background:#2e9e5b}.t{background:#d98a1f}.d{background:#0b6fb8}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid #e3e8ed;vertical-align:top}th{background:#eef2f5}
+.tabs button{padding:6px 12px;border:1px solid #bcc7d1;background:#fff;cursor:pointer;border-radius:4px;margin-right:4px}.tabs button.on{background:#0b3d63;color:#fff}
+input{padding:6px;width:280px}a{color:#0b6fb8}
+.legend span{margin-right:14px}.legend i{display:inline-block;width:10px;height:10px;margin-right:4px}
+</style></head><body>
+<header><h1>Tool (PubMed/OpenAlex) vs VA Dimensions</h1><small id="sub"></small></header>
+<main>
+<div class="cards" id="cards"></div>
+<div class="panel"><h2>By publication month</h2>
+<div class="legend"><span><i class="m"></i>In both</span><span><i class="t"></i>Only in tool</span><span><i class="d"></i>Only in Dimensions</span></div>
+<div id="months"></div></div>
+<div class="grid">
+<div class="panel"><h2>Top journals: only in Dimensions</h2><div id="dj"></div></div>
+<div class="panel"><h2>Top journals: only in tool</h2><div id="tj"></div></div>
+<div class="panel"><h2>Only in Dimensions by type</h2><div id="dt"></div></div>
+<div class="panel"><h2>Only in tool by source</h2><div id="ts"></div></div></div>
+<div class="panel"><h2>Records</h2>
+<div class="tabs" id="tabs"></div><p>
+<input id="q" placeholder="Search title, journal, DOI, PMID"> <a id="dl" href="#">Download CSV</a> <span id="tot"></span></p>
+<table><thead><tr><th>Date</th><th>Title</th><th>Journal</th><th>Type</th><th>DOI</th><th>PMID</th><th id="xh"></th></tr></thead><tbody id="rows"></tbody></table>
+<p><button id="prev">Prev</button> <button id="next">Next</button> <span id="pg"></span></p></div>
+</main>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let side='only_dim',page=0,total=0;
+const sides=[['only_dim','Only in Dimensions'],['only_tool','Only in tool'],['matched','In both']];
+function bars(el,items){const mx=Math.max(1,...items.map(i=>i[1]));$(el).innerHTML=items.map(([k,v])=>`<div class=row><div class=l title="${esc(k)}">${esc(k)}</div><div class=bar style="width:${v/mx*60}%"></div>${v}</div>`).join('')||'None'}
+async function load(){
+ const s=await (await fetch('/api/summary')).json();
+ $('sub').textContent=`Publications dated ${s.start} onward · ${s.files.map(f=>f.file+' ('+f.rows+')').join(', ')}`;
+ const adj=s.dim_total-s.date_mismatch,pct=(s.matched/Math.max(1,adj)*100).toFixed(1);
+ $('cards').innerHTML=[['Tool records',s.tool_total],['Dimensions records',s.dim_total],['In both',s.matched],['Only in tool',s.only_tool],['Only in Dimensions',s.only_dim],['…of which date mismatch (expected)',s.date_mismatch],['Recall (excl. date mismatch)',pct+'%']].map(([l,v])=>`<div class=card><b>${v}</b><span>${l}</span></div>`).join('');
+ const mx=Math.max(1,...s.months.map(m=>m.matched+m.only_tool+m.only_dim));
+ $('months').innerHTML=s.months.map(m=>`<div class=row><div class=l style="width:80px">${m.month}</div><div style="display:flex;width:60%">${[['m',m.matched],['t',m.only_tool],['d',m.only_dim]].map(([c,v])=>`<div class="bar ${c}" style="width:${v/mx*100}%" title="${v}"></div>`).join('')}</div>${m.matched} / ${m.only_tool} / ${m.only_dim}</div>`).join('');
+ bars('dj',s.dim_journals);bars('tj',s.tool_journals);bars('dt',s.dim_types);bars('ts',s.tool_sources);
+ $('tabs').innerHTML=sides.map(([k,l])=>`<button data-k=${k}>${l}</button>`).join('');
+ document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{side=b.dataset.k;page=0;rows()});
+ rows();
+}
+async function rows(){
+ document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.k==side));
+ const q=encodeURIComponent($('q').value);
+ const r=await (await fetch(`/api/records/${side}?q=${q}&page=${page}`)).json();total=r.total;
+ $('xh').textContent=side=='matched'?'Matched by':side=='only_dim'?'Note':'Sources';
+  $('rows').innerHTML=r.rows.map(x=>`<tr><td>${esc(x.date)}</td><td>${x.url?`<a href="${esc(x.url)}" target=_blank rel=noopener>${esc(x.title)}</a>`:esc(x.title)}</td><td>${esc(x.journal)}</td><td>${esc(x.type)}</td><td>${esc(x.doi)}</td><td>${esc(x.pmid)}</td><td>${esc(side=='matched'?x.by:side=='only_dim'?x.note:x.sources)}</td></tr>`).join('');
+ $('tot').textContent=`${total} records`;$('pg').textContent=`Page ${page+1} of ${Math.max(1,Math.ceil(total/50))}`;
+ $('dl').href=`/api/export/${side}?q=${q}`;
+}
+$('q').oninput=()=>{page=0;rows()};
+$('prev').onclick=()=>{if(page>0){page--;rows()}};$('next').onclick=()=>{if((page+1)*50<total){page++;rows()}};
+load();
+</script></body></html>

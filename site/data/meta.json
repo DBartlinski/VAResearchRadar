@@ -1,40 +1,40 @@
 {
-  "started": "2026-11-25T20:23:14",
+  "started": "2026-11-26T19:59:25",
   "start_date": "2026-10-01",
   "sources": {
     "pubmed": {
-      "records": 1170,
-      "since": "2026-10-11"
+      "records": 1166,
+      "since": "2026-10-12"
     },
     "openalex": {
-      "records": 1593,
-      "since": "2026-10-11",
+      "records": 1618,
+      "since": "2026-10-12",
       "resolved": {
         "institutions": [],
         "funders": []
       }
     },
     "crossref": {
-      "records": 1052,
-      "since": "2026-10-11"
+      "records": 1055,
+      "since": "2026-10-12"
     }
   },
   "warnings": [],
-  "total": 2674,
-  "new": 12,
+  "total": 2715,
+  "new": 41,
   "tiers": {
-    "High": 375,
-    "Medium": 608,
-    "Low": 1691
+    "High": 381,
+    "Medium": 616,
+    "Low": 1718
   },
   "journal_tiers": {
-    "Top": 185,
-    "Mid": 564,
-    "Lower": 1620,
-    "Preprint": 231,
-    "Not rated": 74
+    "Top": 189,
+    "Mid": 569,
+    "Lower": 1648,
+    "Preprint": 234,
+    "Not rated": 75
   },
-  "finished": "2026-11-25T20:25:55",
+  "finished": "2026-11-26T20:01:54",
   "scoring": {
     "tiers": {
       "high": 45,
